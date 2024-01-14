@@ -15,16 +15,24 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mxmcg.dlvrmortgagenative"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.mxmcg.dlvrmortgagenative"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "6e12a483-388d-4576-8877-c869f54e7191"
+      },
+      "GRAPHQL_URI": "https://dlvr-solutions-mtg-30966a9fb60c.herokuapp.com/graphql"
     }
   }
 }

@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { View, TextInput, Button, Text, StyleSheet } from "react-native";
+import {
+  View,
+  TextInput,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import { gql, useLazyQuery } from "@apollo/client";
 
 const MORTGAGE_CALCULATION_QUERY = gql`
@@ -51,6 +57,7 @@ const MortgageCalculator = () => {
       <Text style={styles.label}>Property Value</Text>
       <TextInput
         style={styles.input}
+        placeholderTextColor="#fff"
         placeholder="Enter property value"
         value={propertyValue}
         onChangeText={setPropertyValue}
@@ -61,6 +68,7 @@ const MortgageCalculator = () => {
       <TextInput
         style={styles.input}
         placeholder="Enter loan amount"
+        placeholderTextColor="#fff"
         value={loanAmount}
         onChangeText={setLoanAmount}
         keyboardType="numeric"
@@ -69,6 +77,7 @@ const MortgageCalculator = () => {
       <Text style={styles.label}>Interest Rate</Text>
       <TextInput
         style={styles.input}
+        placeholderTextColor="#fff"
         placeholder="Enter interest rate"
         value={interestRate}
         onChangeText={setInterestRate}
@@ -78,16 +87,20 @@ const MortgageCalculator = () => {
       <Text style={styles.label}>Term (years)</Text>
       <TextInput
         style={styles.input}
+        placeholderTextColor="#fff"
         placeholder="Enter term in years"
         value={term}
         onChangeText={setTerm}
         keyboardType="numeric"
       />
 
-      <Button title="Calculate" onPress={handleCalculateClick} />
+      <TouchableOpacity style={styles.button} onPress={handleCalculateClick}>
+        <Text style={styles.buttonText}>Calculate</Text>
+      </TouchableOpacity>
 
-      {loading && <Text>Saving calculation...</Text>}
-      {error && <Text>Error: {error.message}</Text>}
+      {/* ... Result Text */}
+      {loading && <Text style={styles.text}>Saving calculation...</Text>}
+      {error && <Text style={styles.text}>Error: {error.message}</Text>}
       {data && (
         <View>
           <Text style={styles.resultText}>
@@ -106,24 +119,45 @@ const MortgageCalculator = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 10,
+    marginTop: 80,
   },
   input: {
     borderWidth: 1,
     borderColor: "#ddd",
     padding: 10,
-    marginBottom: 10,
+    marginBottom: 40,
     borderRadius: 4,
+    color: "#fff", // Set text color to white
   },
-  label: {
+  text: {
     marginBottom: 5,
+    color: "#fff", // Set text color to white
+  },
+  button: {
+    backgroundColor: "#fff", // Set button background to white
+    padding: 10,
+    borderRadius: 4,
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  buttonText: {
+    color: "#000", // Set button text color
+    fontSize: 16,
+    fontWeight: "bold",
   },
   resultText: {
     marginTop: 10,
     fontSize: 16,
+    color: "#fff", // Set text color to white
   },
   successText: {
     marginTop: 2,
     color: "green",
+  },
+  label: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 

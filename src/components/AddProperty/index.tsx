@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   TextInput,
-  Button,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Platform,
+  Switch,
 } from "react-native";
+
 import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
@@ -77,6 +77,11 @@ const AddPropertyComponent = () => {
   const [interestRate, setInterestRate] = useState("");
   const [homeType, setHomeType] = useState("");
 
+  const [isPopulateChecked, setIsPopulateChecked] = useState(false);
+
+  const toggleSwitch = () =>
+    setIsPopulateChecked((previousState) => !previousState);
+
   const [addRealEstateProperty, { data, loading, error }] = useMutation(
     ADD_REAL_ESTATE_PROPERTY_MUTATION
   );
@@ -125,19 +130,23 @@ const AddPropertyComponent = () => {
           homeType,
         },
       });
-      // ... rest of your submit logic
+
+      if (isPopulateChecked) {
+        populateFormWithRandomData();
+      } else {
+        resetFormFields();
+      }
     } catch (e) {
       console.error(e);
     }
   };
 
-  useEffect(() => {
-    // Generate random defaults
+  const populateFormWithRandomData = () => {
     setPropertyAddress(generateRandomAddress());
+
     const randomPurchasePrice = (Math.random() * 1000000 + 100000).toFixed(2);
     setPurchasePrice(formatCurrency(randomPurchasePrice));
 
-    // Random date in the past up to 50 years
     const yearsAgo = 30;
     const currentDate = new Date();
     const pastDate = new Date(
@@ -167,7 +176,69 @@ const AddPropertyComponent = () => {
     setHomeType(
       ["Single Family", "Condo", "Multifamily"][Math.floor(Math.random() * 3)]
     );
-  }, []);
+  };
+
+  const resetFormFields = () => {
+    // Reset all form fields to blank
+    setPropertyAddress("");
+    setPurchaseDate("");
+    setPurchasePrice("");
+    setOriginalLoanAmount("");
+    setCurrentLoanAmount("");
+    setInterestRate("");
+    setHomeType("");
+  };
+
+  useEffect(() => {
+    if (isPopulateChecked) {
+      // Populate with random data
+      setPropertyAddress(generateRandomAddress());
+      setPropertyAddress(generateRandomAddress());
+      const randomPurchasePrice = (Math.random() * 1000000 + 100000).toFixed(2);
+      setPurchasePrice(formatCurrency(randomPurchasePrice));
+
+      // Random date in the past up to 50 years
+      const yearsAgo = 30;
+      const currentDate = new Date();
+      const pastDate = new Date(
+        currentDate.getFullYear() - yearsAgo,
+        currentDate.getMonth(),
+        currentDate.getDate()
+      );
+      const randomTime =
+        pastDate.getTime() +
+        Math.random() * (currentDate.getTime() - pastDate.getTime());
+      const randomDate = new Date(randomTime);
+      setPurchaseDate(randomDate.toISOString().split("T")[0]);
+
+      const randomOriginalLoanAmount = (
+        Math.random() * 500000 +
+        100000
+      ).toFixed(2);
+      setOriginalLoanAmount(formatCurrency(randomOriginalLoanAmount));
+
+      const randomCurrentLoanAmount = (Math.random() * 500000 + 100000).toFixed(
+        2
+      );
+      setCurrentLoanAmount(formatCurrency(randomCurrentLoanAmount));
+
+      const randomInterestRate = (Math.random() * 5 + 2).toFixed(2);
+      setInterestRate(formatPercentage(randomInterestRate));
+
+      setHomeType(
+        ["Single Family", "Condo", "Multifamily"][Math.floor(Math.random() * 3)]
+      );
+    } else {
+      // Clear the fields
+      setPropertyAddress("");
+      setPurchaseDate("");
+      setPurchasePrice("");
+      setOriginalLoanAmount("");
+      setCurrentLoanAmount("");
+      setInterestRate("");
+      setHomeType("");
+    }
+  }, [isPopulateChecked]);
 
   {
     loading && <p>Saving property...</p>;
@@ -180,11 +251,21 @@ const AddPropertyComponent = () => {
 
   return (
     <ScrollView style={styles.container}>
-      {/* Property Address Input */}
+      <View style={styles.formControl}>
+        <Text style={styles.label}>Populate with random data:</Text>
+        <Switch
+          trackColor={{ false: "#767577", true: "#81b0ff" }}
+          thumbColor={isPopulateChecked ? "#f5dd4b" : "#f4f3f4"}
+          ios_backgroundColor="#3e3e3e"
+          onValueChange={toggleSwitch}
+          value={isPopulateChecked}
+        />
+      </View>
       <View style={styles.formControl}>
         <Text style={styles.label}>Property Address</Text>
         <TextInput
           style={styles.input}
+          placeholderTextColor="#fff" // Set placeholder text color to white
           placeholder="Enter property address"
           value={propertyAddress}
           onChangeText={setPropertyAddress}
@@ -196,6 +277,7 @@ const AddPropertyComponent = () => {
         <Text style={styles.label}>Date of Purchase (MM/DD/YYYY)</Text>
         <TextInput
           style={styles.input}
+          placeholderTextColor="#fff" // Set placeholder text color to white
           placeholder="Enter date (MM/DD/YYYY)"
           value={purchaseDate}
           onChangeText={setPurchaseDate}
@@ -206,6 +288,7 @@ const AddPropertyComponent = () => {
         <Text style={styles.label}>Original Purchase Price</Text>
         <TextInput
           style={styles.input}
+          placeholderTextColor="#fff" // Set placeholder text color to white
           placeholder="Enter original purchase price"
           value={purchasePrice}
           onChangeText={handlePurchasePriceChange}
@@ -218,6 +301,7 @@ const AddPropertyComponent = () => {
         <Text style={styles.label}>Original Loan Amount</Text>
         <TextInput
           style={styles.input}
+          placeholderTextColor="#fff" // Set placeholder text color to white
           placeholder="Enter original loan amount"
           value={originalLoanAmount}
           onChangeText={handleOriginalLoanAmountChange}
@@ -230,6 +314,7 @@ const AddPropertyComponent = () => {
         <Text style={styles.label}>Current Loan Amount</Text>
         <TextInput
           style={styles.input}
+          placeholderTextColor="#fff" // Set placeholder text color to white
           placeholder="Enter current loan amount"
           value={currentLoanAmount}
           onChangeText={handleCurrentLoanAmountChange}
@@ -242,6 +327,7 @@ const AddPropertyComponent = () => {
         <Text style={styles.label}>Interest Rate</Text>
         <TextInput
           style={styles.input}
+          placeholderTextColor="#fff" // Set placeholder text color to white
           placeholder="Enter interest rate"
           value={interestRate}
           onChangeText={handleInterestRateChange}
@@ -257,9 +343,13 @@ const AddPropertyComponent = () => {
           onValueChange={setHomeType}
           style={styles.picker}
         >
-          <Picker.Item label="Single Family" value="Single Family" />
-          <Picker.Item label="Condo" value="Condo" />
-          <Picker.Item label="Multifamily" value="Multifamily" />
+          <Picker.Item
+            label="Single Family"
+            value="Single Family"
+            color="#fff"
+          />
+          <Picker.Item label="Condo" value="Condo" color="#fff" />
+          <Picker.Item label="Multifamily" value="Multifamily" color="#fff" />
         </Picker>
       </View>
 
@@ -283,7 +373,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     fontSize: 16,
     fontWeight: "bold",
-    color: "#333",
+    color: "#fff",
   },
   input: {
     borderWidth: 1,
@@ -291,23 +381,25 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     padding: 10,
     fontSize: 14,
-    color: "#333",
+    color: "#fff",
   },
   pickerContainer: {
     borderWidth: 1,
-    borderColor: "#ccc",
     borderRadius: 4,
+    borderColor: "#ccc",
     overflow: "hidden",
   },
   picker: {
-    color: "#333",
+    color: "#fff",
   },
   button: {
-    backgroundColor: "#0066cc",
-    padding: 15,
+    backgroundColor: "#00093b",
+    borderColor: "#fff",
+    borderWidth: 1,
     borderRadius: 4,
+    padding: 15,
     alignItems: "center",
-    marginTop: 20,
+    marginBottom: 80,
   },
   buttonText: {
     color: "white",
@@ -316,7 +408,7 @@ const styles = StyleSheet.create({
   },
   infoText: {
     fontSize: 14,
-    color: "#666",
+    color: "#fff",
     marginTop: 10,
   },
   errorText: {

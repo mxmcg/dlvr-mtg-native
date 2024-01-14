@@ -1,6 +1,6 @@
 import React from "react";
 import { useQuery } from "@apollo/client";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 
 import { gql } from "@apollo/client";
 
@@ -30,41 +30,34 @@ const formatDate = (timestamp) => {
   return date.toLocaleDateString(undefined, options);
 };
 
-const UserPropertiesComponent = ({ userId }) => {
+const UserPropertiesComponent = ({ userId, navigation }) => {
   const { data, loading, error } = useQuery(GET_USER_PROPERTIES_QUERY, {
     variables: { userId },
   });
 
-  if (loading) return <Text>Loading...</Text>;
-  if (error) return <Text>Error: {error.message}</Text>;
+  const handlePropertySelect = (property) => {
+    navigation.navigate("PropertyDetails", { property });
+  };
+
+  if (loading) return <Text style={styles.textStyle}>Loading...</Text>;
+  if (error)
+    return <Text style={styles.textStyle}>Error: {error.message}</Text>;
 
   return (
     <ScrollView style={styles.container}>
       {data.getUserProperties.map((property, index) => (
-        <View key={index} style={styles.propertyBox}>
-          <Text style={styles.propertyAddress}>{property.propertyAddress}</Text>
-          <Text>
+        <TouchableOpacity
+          key={index}
+          style={styles.propertyBox}
+          onPress={() => handlePropertySelect(property)}
+        >
+          <Text style={[styles.propertyAddress, styles.textStyle]}>
+            {property.propertyAddress.substring(0, 30)}...{" "}
+          </Text>
+          <Text style={styles.textStyle}>
             Purchase Price: ${formatNumberWithCommas(property.purchasePrice)}
           </Text>
-          <Text>
-            Purchase Date: {formatDate(Number(property.purchaseDate))}
-          </Text>
-          <Text>
-            Original Loan Amount: $
-            {formatNumberWithCommas(property.originalLoanAmount)}
-          </Text>
-          <Text>
-            Current Loan Amount: $
-            {formatNumberWithCommas(property.currentLoanAmount)}
-          </Text>
-          <Text>
-            Interest Rate: {formatNumberWithCommas(property.interestRate)}%
-          </Text>
-          <Text>Home Type: {property.homeType}</Text>
-          {index < data.getUserProperties.length - 1 && (
-            <View style={styles.divider} />
-          )}
-        </View>
+        </TouchableOpacity>
       ))}
     </ScrollView>
   );
@@ -73,6 +66,7 @@ const UserPropertiesComponent = ({ userId }) => {
 const styles = StyleSheet.create({
   container: {
     padding: 10,
+    backgroundColor: "#00093b",
   },
   propertyBox: {
     padding: 20,
@@ -83,6 +77,9 @@ const styles = StyleSheet.create({
   propertyAddress: {
     fontSize: 18,
     fontWeight: "bold",
+  },
+  textStyle: {
+    color: "#fff", // Set the text color to white
   },
   divider: {
     height: 1,

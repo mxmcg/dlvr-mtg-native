@@ -4,21 +4,16 @@ import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import UserPropertiesList from "../UserPropertiesList";
 import AddPropertyComponent from "../AddProperty";
 import MortgageCalculator from "../MortgageCalculator";
-
-const FirstRoute = () => (
-  <View style={[styles.scene, { backgroundColor: "#ff4081" }]}>
-    <UserPropertiesList userId="65973c1090d46239cf7c6acb" />
-  </View>
-);
+import PropertyStackNavigator from "../PropertyStackNavigator";
 
 const SecondRoute = () => (
-  <View style={[styles.scene, { backgroundColor: "#673ab7" }]}>
+  <View style={[styles.scene, { backgroundColor: "#00093b" }]}>
     <AddPropertyComponent />
   </View>
 );
 
 const ThirdRoute = () => (
-  <View style={[styles.scene, { backgroundColor: "#3f51b5" }]}>
+  <View style={[styles.scene, { backgroundColor: "#00093b" }]}>
     <MortgageCalculator />
   </View>
 );
@@ -34,7 +29,7 @@ export default function TabViewExample() {
   ]);
 
   const renderScene = SceneMap({
-    first: FirstRoute,
+    first: PropertyStackNavigator,
     second: SecondRoute,
     third: ThirdRoute,
   });

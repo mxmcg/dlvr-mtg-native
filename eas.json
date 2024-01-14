@@ -1,0 +1,25 @@
+{
+  "cli": {
+    "version": ">= 5.9.3"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "GRAPHQL_URI": "https://dlvr-solutions-mtg-30966a9fb60c.herokuapp.com/graphql"
+      }
+    },
+    "preview": {
+      "distribution": "internal"
+    },
+    "production": {
+      "env": {
+        "GRAPHQL_URI": "https://dlvr-solutions-mtg-30966a9fb60c.herokuapp.com/graphql"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
